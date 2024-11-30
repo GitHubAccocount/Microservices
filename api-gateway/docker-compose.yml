@@ -1,0 +1,16 @@
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8000:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - auth_network
+      - product_network
+
+networks:
+  auth_network:
+    external: true
+  product_network:
+    external: true
