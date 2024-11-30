@@ -1,4 +1,22 @@
 services:
+  auth_db:
+    image: mysql:8
+    environment:
+      - MYSQL_DATABASE=auth_db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=rootpassword
+    volumes:
+      - auth_db_data:/var/lib/mysql
+    ports:
+      - 33066:3306
+    networks:
+      - auth_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
   auth_service:
     build: .
     ports:
@@ -15,23 +33,9 @@ services:
     networks:
       - auth_network
 
-  auth_db:
-    image: mysql:8
-    environment:
-      - MYSQL_DATABASE=auth_db
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
-      - MYSQL_ROOT_PASSWORD=rootpassword
-    volumes:
-      - auth_db_data:/var/lib/mysql
-    ports:
-      - 33066:3306
-    networks:
-      - auth_network
-
 networks:
   auth_network:
-    driver: bridge
+    name: auth_network
 
 volumes:
   auth_db_data:

@@ -19,6 +19,8 @@ class UserLoginView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         refresh = RefreshToken.for_user(user)
+        refresh['is_staff'] = user.is_staff
+        refresh['is_superuser'] = user.is_superuser
 
         return Response({
             'refresh': str(refresh),

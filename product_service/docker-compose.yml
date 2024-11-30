@@ -1,0 +1,41 @@
+services:
+  product_service:
+    build: .
+    ports:
+      - "8002:8000"
+    environment:
+      - DB_HOST=product_db
+      - DB_NAME=product_db
+      - DB_USER=user
+      - DB_PASSWORD=password
+    volumes:
+      - .:/app
+    depends_on:
+      - product_db
+    networks:
+      - product_network
+
+  product_db:
+    image: mysql:8
+    environment:
+      - MYSQL_DATABASE=product_db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=rootpassword
+    volumes:
+      - product_db_data:/var/lib/mysql
+    ports:
+      - 33067:3306
+    networks:
+      - product_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+networks:
+  product_network:
+    name: product_network
+
+volumes:
+  product_db_data:
