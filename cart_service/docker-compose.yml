@@ -1,0 +1,50 @@
+# docker-compose.yml (cart service)
+services:
+  cart_service:
+    build: .
+    ports:
+      - "8003:8000"
+    environment:
+      - DB_HOST=cart_db
+      - DB_NAME=cart_db
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - PRODUCT_SERVICE_URL=http://product_service:8000
+      - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - cart_db
+      - rabbitmq
+    networks:
+      - cart_network
+      - product_network
+
+  cart_db:
+    image: mysql:8
+    environment:
+      - MYSQL_DATABASE=cart_db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=rootpassword
+    volumes:
+      - cart_db_data:/var/lib/mysql
+    ports:
+      - 33068:3306
+    networks:
+      - cart_network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - cart_network
+
+networks:
+  cart_network:
+    name: cart_network
+  product_network:
+    external: true
+
+volumes:
+  cart_db_data:
