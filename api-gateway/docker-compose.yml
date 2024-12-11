@@ -8,9 +8,12 @@ services:
     networks:
       - auth_network
       - product_network
+      - cart_network
 
 networks:
   auth_network:
     external: true
   product_network:
+    external: true
+  cart_network:
     external: true

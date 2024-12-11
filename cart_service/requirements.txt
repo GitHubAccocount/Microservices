@@ -1,0 +1,8 @@
+Django>=4.2
+djangorestframework
+mysqlclient
+python-dotenv
+djangorestframework-simplejwt
+requests
+pika
+requests==2.31.0
